@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
+import dotenv from "dotenv";
+dotenv.config();
 // Load conversation history from localStorage
 export const loadChatHistory = () => {
   const storedMessages = localStorage.getItem("chatHistory");
@@ -21,7 +22,7 @@ let userInputState = "";
 let responseState = "";
 
 // Initialize Gemini API
-const genAI = new GoogleGenerativeAI("AIzaSyCafUtxV0iXFV62F8gSAEcXwk5gSYU7_SY");
+const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 // Function to send message to Gemini API
