@@ -3,7 +3,9 @@ import {
   sendMessageToGemini,
   loadChatHistory,
   saveChatHistory,
+  clearChatHistory,
 } from "../api/main";
+import { FiRefreshCw } from "react-icons/fi"; // Import refresh icon
 
 export default function Home() {
   const [messages, setMessages] = useState(loadChatHistory());
@@ -27,7 +29,7 @@ export default function Home() {
 
     try {
       const botReply = await sendMessageToGemini(input);
-      const botMessage = { sender: "bot", text: botReply };
+      const botMessage = { sender: "model", text: botReply };
 
       const newMessages = [...updatedMessages, botMessage];
       setMessages(newMessages);
@@ -39,11 +41,28 @@ export default function Home() {
     }
   };
 
+  const startNewConversation = () => {
+    clearChatHistory();
+    setMessages([]);
+  };
+
   return (
-    <div className="flex items-center justify-center bg-gray-100 px-4 min-h-screen">
-      <div className="w-full max-w-screen-lg h-[90vh] flex flex-col">
+    <div className="flex flex-col items-center justify-center bg-gray-100 min-h-screen">
+      {/* Navbar with "New Conversation" Icon */}
+      <div className="w-full max-w-screen-lg p-4 flex justify-between items-center ">
+        <h1 className="text-xl font-semibold text-gray-800"></h1>
+        <button
+          onClick={startNewConversation}
+          className="text-gray-600 hover:text-red-600 transition"
+          title="Start New Conversation"
+        >
+          <FiRefreshCw size={24} />
+        </button>
+      </div>
+
+      <div className="w-full max-w-screen-lg h-[85vh] flex flex-col">
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 overflow-auto scrollbar-hide ">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 overflow-auto scrollbar-hide">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -63,7 +82,7 @@ export default function Home() {
           <div ref={messagesEndRef} className="mb-20" />
         </div>
 
-        {/* Input Box */}
+        {/* Input Box & Send Button */}
         <div className="w-full p-3 bg-gray-100 flex items-start gap-2">
           <textarea
             value={input}
